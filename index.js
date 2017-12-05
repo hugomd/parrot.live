@@ -18,10 +18,9 @@ const colorsOptions = ['red', 'yellow', 'green', 'blue', 'magenta', 'cyan', 'whi
 const streamer = stream => {
   let index = 0;
   setInterval(() => {
-    if (index >= frames.length) index = 0; stream.push('\033c');
+    if (index > frames.length) index = 0; stream.push('\033c');
     const c = colorsOptions[Math.floor(Math.random() * colorsOptions.length)];
     stream.push(colors[c](frames[index]));
-    stream.push('\n')
     index++;
   }, 70);
 }
