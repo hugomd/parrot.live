@@ -1,0 +1,19 @@
+{
+  "name": "parrot-live",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "colors": "^1.1.2",
+    "mz": "^2.7.0"
+  },
+  "devDependencies": {},
+  "author": {
+    "name": "Hugo Muller-Downing",
+    "email": "npmjs@hugo.sx",
+    "url": "hu.md"
+  },
+  "license": "MIT"
+}
