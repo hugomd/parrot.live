@@ -17,7 +17,7 @@ const colorsOptions = ['red', 'yellow', 'green', 'blue', 'magenta', 'cyan', 'whi
 
 const streamer = stream => {
   let index = 0;
-  setInterval(() => {
+  return setInterval(() => {
     if (index > frames.length) index = 0; stream.push('\033c');
     const c = colorsOptions[Math.floor(Math.random() * colorsOptions.length)];
     stream.push(colors[c](frames[index]));
@@ -33,7 +33,12 @@ const server = http.createServer((req, res) => {
   const stream = new Readable();
   stream._read = function noop () {};
   stream.pipe(res);
-  streamer(stream);
+  const interval = streamer(stream);
+
+  req.on('close', () => {
+    stream.destroy();
+    clearInterval(interval);
+  });
 });
 
 
