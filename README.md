@@ -1,5 +1,9 @@
 # parrot.live
 
+<div align="center">
+  <img src='https://cl.ly/2P0W2f1P1h25/+.gif' />
+</div>
+
 An initiative, using frames from [`terminal-parrot`](https://github.com/jmhobbs/terminal-parrot), to allow any computer with `curl` to display an _animated_ party parrot.
 
 # Try it!
