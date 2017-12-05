@@ -38,7 +38,8 @@ const server = http.createServer((req, res) => {
 });
 
 
-server.listen(3000, err => {
+const port = process.env.PARROT_PORT || 3000;
+server.listen(port, err => {
   if (err) throw err;
-  console.log('Listening on locahost:3000');
+  console.log(`Listening on locahost:${port}`);
 });
