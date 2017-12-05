@@ -22,7 +22,7 @@ const streamer = stream => {
     const c = colorsOptions[Math.floor(Math.random() * colorsOptions.length)];
     stream.push(colors[c](frames[index]));
     index++;
-  }, 70);
+  }, 120);
 }
 
 const server = http.createServer((req, res) => {
