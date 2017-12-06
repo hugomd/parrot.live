@@ -26,7 +26,7 @@ const streamer = stream => {
 }
 
 const server = http.createServer((req, res) => {
-  if (!req.headers['user-agent'].includes('curl')) {
+  if (req.headers && req.headers['user-agent'] && !req.headers['user-agent'].includes('curl')) {
     res.writeHead(302, {'Location': 'https://twitter.com/hugojmd'});
     return res.end();
   }
