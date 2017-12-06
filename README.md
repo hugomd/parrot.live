@@ -1,15 +1,16 @@
 # parrot.live
 
-<div align="center">
-  <img src='https://cl.ly/2P0W2f1P1h25/+.gif' />
-</div>
-
 An initiative, using frames from [`terminal-parrot`](https://github.com/jmhobbs/terminal-parrot), to allow any computer with `curl` to display an _animated_ party parrot.
 
 # Try it!
 ```bash
 curl parrot.live
 ```
+
+# :partyparrot:
+<div align="center">
+  <img src='https://cl.ly/2P0W2f1P1h25/+.gif' />
+</div>
 
 # Thanks
 * [jmhobbs](https://github.com/jmhobbs) for [`terminal-parrot`](https://github.com/jmhobbs/terminal-parrot), and for the animation frames
