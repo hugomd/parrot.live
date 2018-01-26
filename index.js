@@ -21,7 +21,7 @@ const streamer = stream => {
   let lastColor = -1;
   let newColor = 0;
   return setInterval(() => {
-    if (index >= frames.length) index = 0; stream.push('\033c');
+    if (index >= frames.length) index = 0; stream.push('\033[2J\033[H');
 
     newColor = Math.floor(Math.random() * numColors);
 
