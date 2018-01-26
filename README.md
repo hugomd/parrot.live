@@ -9,7 +9,7 @@ curl parrot.live
 
 # :partyparrot:
 <div align="center">
-  <img src='https://cl.ly/2P0W2f1P1h25/+.gif' />
+  <img src='https://d.pr/i/jKluc0.gif' />
 </div>
 
 # Thanks
