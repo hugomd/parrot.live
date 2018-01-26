@@ -40,7 +40,7 @@ const streamer = stream => {
 
 const server = http.createServer((req, res) => {
   if (req.headers && req.headers['user-agent'] && !req.headers['user-agent'].includes('curl')) {
-    res.writeHead(302, {'Location': 'https://twitter.com/hugojmd'});
+    res.writeHead(302, {'Location': 'https://github.com/hugomd/parrot.live'});
     return res.end();
   }
   const stream = new Readable();
