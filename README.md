@@ -20,3 +20,10 @@ curl parrot.live
 * [cultofthepartyparrot.com](http://cultofthepartyparrot.com/)
 * [`terminal-parrot`](https://github.com/jmhobbs/terminal-parrot)
 * [`parrotsay`](https://github.com/matheuss/parrotsay)
+
+# Sponsors
+A huge thank you to [Vultr](https://www.vultr.com/) for sponsoring this project with free bandwidth 📈🙇‍♂️
+
+<a href='https://www.vultr.com/'>
+	<img width='500' alt='Sponsored by Vultr' src='https://www.vultr.com/dist/img/brand/badge_onwhite.svg' />
+</a>
