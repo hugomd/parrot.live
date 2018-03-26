@@ -24,14 +24,11 @@ const streamer = stream => {
   let lastColor;
   let newColor;
   return setInterval(() => {
-    if (index >= frames.length)
-      index = 0;
-
     stream.push('\033[2J\033[H');
     lastColor = newColor = selectColor(lastColor);
     stream.push(colors[newColor](frames[index]));
 
-    index++;
+    index = (index + 1) % frames.length;
   }, 70);
 }
 
