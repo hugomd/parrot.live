@@ -15,7 +15,7 @@ fs.readdir('./frames').then(data => {
 
 const selectColor = function(previousColor) {
   const colors = ['red', 'yellow', 'green', 'blue', 'magenta', 'cyan', 'white'];
-  let availableColors = colors.filter(color => color !== previousColor);
+  const availableColors = colors.filter(color => color !== previousColor);
   return availableColors[Math.floor(Math.random() * availableColors.length)];
 }
 
@@ -23,11 +23,10 @@ const streamer = stream => {
   let index = 0;
   let lastColor;
   return setInterval(() => {
-    let newColor;
-    let clearScreen = '\033[2J\033[H';
-
+    const clearScreen = '\033[2J\033[H';
     stream.push(clearScreen);
-    lastColor = newColor = selectColor(lastColor);
+
+    const newColor = lastColor = selectColor(lastColor);
     stream.push(colors[newColor](frames[index]));
 
     index = (index + 1) % frames.length;
