@@ -10,7 +10,7 @@ fs.readdir('./frames').then(data => {
   data.forEach(async frame => {
     const f = await fs.readFile(`./frames/${frame}`);
     frames.push(f.toString());
-  })
+  });
 });
 
 const colorsOptions = ['red', 'yellow', 'green', 'blue', 'magenta', 'cyan', 'white'];
