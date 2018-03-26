@@ -13,29 +13,23 @@ fs.readdir('./frames').then(data => {
   });
 });
 
-const colorsOptions = ['red', 'yellow', 'green', 'blue', 'magenta', 'cyan', 'white'];
-const numColors = colorsOptions.length;
+const selectColor = function(previousColor) {
+  const colors = ['red', 'yellow', 'green', 'blue', 'magenta', 'cyan', 'white'];
+  let availableColors = colors.filter(color => color !== previousColor);
+  return availableColors[Math.floor(Math.random() * availableColors.length)];
+}
 
 const streamer = stream => {
   let index = 0;
-  let lastColor = -1;
-  let newColor = 0;
+  let lastColor;
+  let newColor;
   return setInterval(() => {
     if (index >= frames.length)
       index = 0;
 
     stream.push('\033[2J\033[H');
-
-    newColor = Math.floor(Math.random() * numColors);
-
-    // Reroll for a new color if it was the same as last frame
-    if(newColor == lastColor) {
-      newColor += (1 + Math.floor(Math.random() * (numColors - 1)));
-      newColor %= numColors;
-    }
-
-    lastColor = newColor;
-    stream.push(colors[colorsOptions[newColor]](frames[index]));
+    lastColor = newColor = selectColor(lastColor);
+    stream.push(colors[newColor](frames[index]));
 
     index++;
   }, 70);
