@@ -22,9 +22,11 @@ const selectColor = function(previousColor) {
 const streamer = stream => {
   let index = 0;
   let lastColor;
-  let newColor;
   return setInterval(() => {
-    stream.push('\033[2J\033[H');
+    let newColor;
+    let clearScreen = '\033[2J\033[H';
+
+    stream.push(clearScreen);
     lastColor = newColor = selectColor(lastColor);
     stream.push(colors[newColor](frames[index]));
 
