@@ -11,7 +11,7 @@
     "mz": "^2.7.0"
   },
   "devDependencies": {
-    "nodemon": "^1.12.4"
+    "nodemon": "^1.18.4"
   },
   "author": {
     "name": "Hugo Muller-Downing",
