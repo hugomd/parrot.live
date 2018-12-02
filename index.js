@@ -1,25 +1,32 @@
 const fs = require('mz/fs');
+const path = require('path');
 const http = require('http');
 const url = require('url');
 const { Readable } = require('stream');
 const colors = require('colors/safe');
 
-const frames = [];
-const flipped = [];
-
 // Setup frames in memory
-fs.readdir('./frames').then(data => {
-  data.forEach(async frame => {
-    const f = await fs.readFile(`./frames/${frame}`);
-    frames.push(f.toString());
-    flipped.push(
-      f
-        .toString()
-        .split('')
-        .reverse()
-        .join('')
-    );
-  });
+let frames;
+let flipped;
+
+(async () => {
+  const framesPath = 'frames';
+  const files = await fs.readdir(framesPath);
+
+  frames = await Promise.all(files.map(async (file) => {
+    const frame = await fs.readFile(path.join(framesPath, file));
+    return frame.toString();
+  }));
+  flipped = frames.map(f => {
+    return f
+      .toString()
+      .split('')
+      .reverse()
+      .join('')
+  })
+})().catch((err) => {
+  console.log('Error loading frames');
+  console.log(err);
 });
 
 const colorsOptions = [
@@ -44,8 +51,10 @@ const streamer = (stream, opts) => {
   return setInterval(() => {
     if (index >= frames.length) index = 0;
     if (index < 0) index = frames.length - 1;
-
+    
+    // clear the screen
     stream.push('\033[2J\033[H');
+    
     newColor = Math.floor(Math.random() * numColors);
 
     // Reroll for a new color if it was the same as last frame
