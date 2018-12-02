@@ -7,11 +7,11 @@
     "dev": "nodemon index.js"
   },
   "dependencies": {
-    "colors": "^1.1.2",
-    "mz": "^2.7.0"
+    "colors": "1.1.2",
+    "mz": "2.7.0"
   },
   "devDependencies": {
-    "nodemon": "^1.18.4"
+    "nodemon": "1.18.7"
   },
   "author": {
     "name": "Hugo Muller-Downing",
