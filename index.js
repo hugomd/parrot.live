@@ -72,6 +72,11 @@ const validateQuery = ({ flip }) => ({
 });
 
 const server = http.createServer((req, res) => {
+  if (req.url === '/healthcheck') {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    return res.end(JSON.stringify({status: 'ok'}));
+  }
+
   if (
     req.headers &&
     req.headers['user-agent'] &&
@@ -80,6 +85,7 @@ const server = http.createServer((req, res) => {
     res.writeHead(302, { Location: 'https://github.com/hugomd/parrot.live' });
     return res.end();
   }
+
   const stream = new Readable();
   stream._read = function noop() {};
   stream.pipe(res);
