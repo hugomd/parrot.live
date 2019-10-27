@@ -6,25 +6,22 @@ const { Readable } = require('stream');
 const colors = require('colors/safe');
 
 // Setup frames in memory
-let original;
-let flipped;
+const allFrames = {};
 
-(async () => {
-  const framesPath = 'frames';
-  const files = await fs.readdir(framesPath);
+const loadParrots = async (parrot='parrot') => {
+  const framesPath = `frames`;
+  const parrots = await fs.readdir(framesPath);
 
-  original = await Promise.all(files.map(async (file) => {
-    const frame = await fs.readFile(path.join(framesPath, file));
-    return frame.toString();
+  await Promise.all(parrots.map(async parrot => {
+    const files = await fs.readdir(`${framesPath}/${parrot}`);
+    allFrames[parrot] = await Promise.all(files.map(async (file) => {
+      const frame = await fs.readFile(path.join(framesPath, parrot, file));
+      return frame.toString();
+    }));
   }));
-  flipped = original.map(f => {
-    return f
-      .toString()
-      .split('')
-      .reverse()
-      .join('')
-  })
-})().catch((err) => {
+}
+
+loadParrots().catch((err) => {
   console.log('Error loading frames');
   console.log(err);
 });
@@ -49,27 +46,21 @@ const selectColor = previousColor => {
   return color;
 };
 
-const streamer = (stream, opts) => {
+const streamer = (stream, parrot='parrot') => {
   let index = 0;
   let lastColor;
   let frame = null;
-  const frames = opts.flip ? flipped : original;
+  const frames = allFrames[parrot || 'parrot'];
 
   return setInterval(() => {
     // clear the screen
     stream.push('\033[2J\033[3J\033[H');
-
-    const newColor = lastColor = selectColor(lastColor);
-
-    stream.push(colors[colorsOptions[newColor]](frames[index]));
+    stream.push(frames[index]);
 
     index = (index + 1) % frames.length;
   }, 70);
 };
 
-const validateQuery = ({ flip }) => ({
-  flip: String(flip).toLowerCase() === 'true'
-});
 
 const server = http.createServer((req, res) => {
   if (req.url === '/healthcheck') {
@@ -81,15 +72,44 @@ const server = http.createServer((req, res) => {
     req.headers &&
     req.headers['user-agent'] &&
     !req.headers['user-agent'].includes('curl')
-  ) {
+  ) {    
     res.writeHead(302, { Location: 'https://github.com/hugomd/parrot.live' });
     return res.end();
   }
 
+  const parsedUrl = url.parse(req.url, true);
+
+  if (parsedUrl.path === '/list') {
+    res.writeHead(200);
+    const availableParrots = Object.keys(allFrames).sort()
+                                   .filter(parrot => parrot !== 'parrot')
+                                   .map((parrot, i) => {
+      let ret = (parrot.replace('parrot', '') + ' '.repeat(25)).substr(0,24);
+      if ((i+1)%5 ===0) {
+        ret += '\n\t';
+      }
+      return ret;
+    });
+    res.end(`Available parrots:
+\t${availableParrots.join('')}
+
+Specify a parrot in the url:
+\t curl parrot.live/football
+    `);
+    return;
+  }
+
+  const [,parrot] = parsedUrl.path.match(/\/(.*)/);
+  if (parrot && !allFrames[parrot]) {
+    res.writeHead(404);
+    res.end(`Parrot not found: ${parrot}\n Try parrot.live/list to see all available parrots.\n`);
+    return;
+  }
+  
   const stream = new Readable();
   stream._read = function noop() {};
   stream.pipe(res);
-  const interval = streamer(stream, validateQuery(url.parse(req.url, true).query));
+  const interval = streamer(stream, parrot);
 
   req.on('close', () => {
     stream.destroy();
