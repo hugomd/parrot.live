@@ -25,5 +25,5 @@ curl parrot.live
 A huge thank you to [Vultr](https://www.vultr.com/) for sponsoring this project with free bandwidth 📈🙇‍♂️
 
 <a href='https://www.vultr.com/'>
-	<img width='500' alt='Sponsored by Vultr' src='https://www.vultr.com/dist/img/brand/badge_onwhite.svg' />
+	<img width='500' alt='Sponsored by Vultr' src='https://www.vultr.com/media/badge_onwhite.svg' />
 </a>
