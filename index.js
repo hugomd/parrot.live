@@ -57,7 +57,7 @@ const streamer = (stream, opts) => {
 
   return setInterval(() => {
     // clear the screen
-    stream.push('\033[2J\033[H');
+    stream.push('\033[2J\033[3J\033[H');
 
     const newColor = lastColor = selectColor(lastColor);
 
