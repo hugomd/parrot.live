@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "node index.js",
+    "start": "FORCE_COLOR=1 node index.js",
     "dev": "nodemon index.js"
   },
   "dependencies": {
-    "colors": "1.1.2",
+    "colors": "1.4.0",
     "mz": "2.7.0"
   },
   "devDependencies": {
