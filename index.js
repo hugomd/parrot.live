@@ -17,28 +17,15 @@ let flipped;
     const frame = await fs.readFile(path.join(framesPath, file));
     return frame.toString();
   }));
-  flipped = original.map(f => {
-    return f
-      .toString()
-      .split('')
-      .reverse()
-      .join('')
-  })
+  flipped = original.map(frame => frame.split('').reverse().join(''));
 })().catch((err) => {
   console.log('Error loading frames');
   console.log(err);
 });
 
-const colorsOptions = [
-  'red',
-  'yellow',
-  'green',
-  'blue',
-  'magenta',
-  'cyan',
-  'white'
-];
+const colorsOptions = ['red', 'yellow', 'green', 'blue', 'magenta', 'cyan', 'white'];
 const numColors = colorsOptions.length;
+
 const selectColor = previousColor => {
   let color;
 
@@ -52,7 +39,6 @@ const selectColor = previousColor => {
 const streamer = (stream, opts) => {
   let index = 0;
   let lastColor;
-  let frame = null;
   const frames = opts.flip ? flipped : original;
 
   return setInterval(() => {
@@ -64,7 +50,7 @@ const streamer = (stream, opts) => {
     stream.push(colors[colorsOptions[newColor]](frames[index]));
 
     index = (index + 1) % frames.length;
-  }, 70);
+  }, 50); // Reduced interval time for smoother animation
 };
 
 const validateQuery = ({ flip }) => ({
@@ -74,7 +60,7 @@ const validateQuery = ({ flip }) => ({
 const server = http.createServer((req, res) => {
   if (req.url === '/healthcheck') {
     res.writeHead(200, { 'Content-Type': 'application/json' });
-    return res.end(JSON.stringify({status: 'ok'}));
+    return res.end(JSON.stringify({ status: 'ok' }));
   }
 
   if (
