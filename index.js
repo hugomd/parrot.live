@@ -23,7 +23,14 @@ let flipped;
   console.log(err);
 });
 
-const colorsOptions = ['red', 'yellow', 'green', 'blue', 'magenta', 'cyan', 'white'];
+const colorsOptions = [
+  'red',
+  'yellow',
+  'green',
+  'blue',
+  'magenta',
+  'cyan',
+  'white'];
 const numColors = colorsOptions.length;
 
 const selectColor = previousColor => {
