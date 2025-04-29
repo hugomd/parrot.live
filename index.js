@@ -6,8 +6,9 @@ const { Readable } = require('stream');
 const colors = require('colors/safe');
 
 // Setup frames in memory
-let original;
-let flipped;
+// Load frames into memory once
+let original = [];
+let flipped = [];
 
 (async () => {
   const framesPath = 'frames';
@@ -49,32 +50,49 @@ const selectColor = previousColor => {
   return color;
 };
 
-const streamer = (stream, opts) => {
+function streamer(stream, opts) {
+  const frames = opts.flip ? flipped : original;
   let index = 0;
   let lastColor;
-  let frame = null;
-  const frames = opts.flip ? flipped : original;
+  let timer;
 
-  return setInterval(() => {
-    // clear the screen
-    stream.push('\033[2J\033[3J\033[H');
+  function tick() {
+    // clear screen
+    stream.push('\u001b[2J\u001b[3J\u001b[H');
 
-    const newColor = lastColor = selectColor(lastColor);
+    // color frame
+    const colorIdx = lastColor = selectColor(lastColor);
+    const coloredFrame = colors[colorsOptions[colorIdx]](frames[index]);
 
-    stream.push(colors[colorsOptions[newColor]](frames[index]));
-
+    // try to push; respect backpressure
+    const ok = stream.push(coloredFrame);
     index = (index + 1) % frames.length;
-  }, 70);
-};
 
-const validateQuery = ({ flip }) => ({
-  flip: String(flip).toLowerCase() === 'true'
-});
+    if (ok) {
+      timer = setTimeout(tick, 70);
+    } else {
+      stream.once('drain', () => {
+        timer = setTimeout(tick, 70);
+      });
+    }
+  }
+
+  // start
+  tick();
+
+  // cleanup function
+  return () => {
+    clearTimeout(timer);
+  };
+}
+
+const validateQuery = ({ flip }) => ({ flip: String(flip).toLowerCase() === 'true' });
 
 const server = http.createServer((req, res) => {
+  // Healthcheck route
   if (req.url === '/healthcheck') {
     res.writeHead(200, { 'Content-Type': 'application/json' });
-    return res.end(JSON.stringify({status: 'ok'}));
+    return res.end(JSON.stringify({ status: 'ok' }));
   }
 
   if (
@@ -86,19 +104,26 @@ const server = http.createServer((req, res) => {
     return res.end();
   }
 
-  const stream = new Readable();
-  stream._read = function noop() {};
+  const stream = new Readable({ read() {} });
+  res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
   stream.pipe(res);
-  const interval = streamer(stream, validateQuery(url.parse(req.url, true).query));
 
-  req.on('close', () => {
+  // Start streaming with cleanup handler
+  const opts = validateQuery(url.parse(req.url, true).query);
+  const cleanupLoop = streamer(stream, opts);
+
+  // Clean up when the client disconnects
+  const onClose = () => {
+    cleanupLoop();
     stream.destroy();
-    clearInterval(interval);
-  });
+  };
+  res.on('close', onClose);
+  res.on('error', onClose);
 });
 
 const port = process.env.PARROT_PORT || 3000;
 server.listen(port, err => {
   if (err) throw err;
-  console.log(`Listening on localhost:${port}`);
+  console.log(`Listening on http://localhost:${port}`);
 });
+
