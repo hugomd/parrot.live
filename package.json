@@ -2,6 +2,7 @@
   "name": "parrot-live",
   "version": "1.0.0",
   "description": "",
+  "type": "module",
   "scripts": {
     "start": "FORCE_COLOR=1 node index.js",
     "dev": "node --watch index.js"

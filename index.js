@@ -1,8 +1,8 @@
-const fs = require('node:fs/promises');
-const path = require('node:path');
-const http = require('node:http');
-const { Readable } = require('node:stream');
-const { styleText } = require('node:util');
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import http from 'node:http';
+import { Readable } from 'node:stream';
+import { styleText } from 'node:util';
 
 // Setup frames in memory
 // Load frames into memory once
