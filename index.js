@@ -1,9 +1,8 @@
-const fs = require('mz/fs');
-const path = require('path');
-const http = require('http');
-const url = require('url');
-const { Readable } = require('stream');
-const colors = require('colors/safe');
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import http from 'node:http';
+import { Readable } from 'node:stream';
+import { styleText } from 'node:util';
 
 // Setup frames in memory
 // Load frames into memory once
@@ -62,7 +61,7 @@ function streamer(stream, opts) {
 
     // color frame
     const colorIdx = lastColor = selectColor(lastColor);
-    const coloredFrame = colors[colorsOptions[colorIdx]](frames[index]);
+    const coloredFrame = styleText(colorsOptions[colorIdx], frames[index]);
 
     // try to push; respect backpressure
     const ok = stream.push(coloredFrame);
@@ -86,7 +85,7 @@ function streamer(stream, opts) {
   };
 }
 
-const validateQuery = ({ flip }) => ({ flip: String(flip).toLowerCase() === 'true' });
+const validateQuery = (query) => ({ flip: query.get('flip')?.toLowerCase() === 'true' });
 
 const server = http.createServer((req, res) => {
   // Healthcheck route
@@ -109,7 +108,8 @@ const server = http.createServer((req, res) => {
   stream.pipe(res);
 
   // Start streaming with cleanup handler
-  const opts = validateQuery(url.parse(req.url, true).query);
+  // The 2nd argument of new URL() accepts an arbitrary dummy domain because we use only the search params
+  const opts = validateQuery(new URL(req.url, 'http://localhost/').searchParams);
   const cleanupLoop = streamer(stream, opts);
 
   // Clean up when the client disconnects
